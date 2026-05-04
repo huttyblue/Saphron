@@ -1,52 +1,93 @@
 const node_path = require('node:path');
+const app = require('electron')
+const ipcRenderer = require('electron').ipcRenderer;
+
+
 var id_id = 0;
 var ar_subwindows = []
 
-
-// create main windows
-
-var tab_area_1 = new class_tab_area()
-tab_area_1.mount = document.getElementById("panel_mountpoint_files")
+var user_path = ""
+var project_path = ""
 
 
 
-var files_panel = new class_subpanel_files()
-id_id += 1
-files_panel.id_internal = id_id;
+// var tab_area_2 = new class_tab_area()
+// tab_area_2.mount = document.getElementById("panel_mountpoint_documents")
 
-var data_manager_panel = new class_data_manager()
-id_id += 1
-data_manager_panel.id_internal = id_id;
+// var documents_panel = new class_subpanel_document()
+// id_id += 1
+// documents_panel.id_internal = id_id;
 
-
-tab_area_1.refresh()
-tab_area_1.add_tab(files_panel, "Files")
-tab_area_1.add_tab(data_manager_panel, "Data")
-tab_area_1.refresh_contents()
+// tab_area_2.refresh()
+// tab_area_2.add_tab(documents_panel, "Docs")
+// tab_area_2.refresh_contents()
 
 
+ipcRenderer.invoke('get_user_path', 'fileName.txt').then(
+  result => set_user_data_path(result)
+);
 
 
-//tab_area_1.refresh()
-
-//tab_area_1.refresh_contents()
-
-//files_panel.refresh()
+//console.log(RemotePlayback.app.getPath('userData'));
 
 
 
 
-var tab_area_2 = new class_tab_area()
-tab_area_2.mount = document.getElementById("panel_mountpoint_documents")
 
-var documents_panel = new class_subpanel_document()
-id_id += 1
-documents_panel.id_internal = id_id;
+function set_user_data_path(_result){
+    console.log(_result)
+    user_path = _result
+    document.getElementById("readouts").innerHTML += "<br>User Path " + user_path
+    const fs = require('fs');
+    if (fs.existsSync(user_path+"/saphron_config.txt")) {
+        document.getElementById("readouts").innerHTML += "<br>Config File Found, Loading Last Project"
+        actually_load_project()
+    } else {
+        document.getElementById("readouts").innerHTML += "<br>No Config File Found"
+    }
+}
 
-tab_area_2.refresh()
-tab_area_2.add_tab(documents_panel, "Docs")
-tab_area_2.refresh_contents()
 
+function open_file_dialog(){
+    document.getElementById("readouts").innerHTML += "<br>Enter Path of Saphron Project Below"
+    document.getElementById("readouts").innerHTML += "<br><input id='project_path'></input>"
+    document.getElementById("readouts").innerHTML += "<br><button onclick='load_project()'> Load Project From Path </button>"
+}
+
+function load_project(){
+    project_path = document.getElementById("project_path").value
+    const fs = require('node:fs');
+
+
+        fs.writeFile(user_path+"/saphron_config.txt", project_path, err => {
+        if (err) {
+            console.error(err);
+        } else {
+            // file written successfully
+            console.log("file saved")
+        }
+    });
+
+    actually_load_project()
+}
+
+function actually_load_project(){
+    const fs = require('fs');
+    
+   
+    const data = fs.readFileSync(user_path+"/saphron_config.txt", 'utf-8');
+    project_path = data;
+    console.log(data)
+    document.getElementById("readouts").innerHTML += "<br>Loaded Project from Path " + project_path
+
+        
+    
+    document.getElementById("readouts").innerHTML += "<br>Loaded Project from Path 2 " + project_path
+    document.getElementById("readouts").style.display = "none"
+    load_saph_project(document.getElementById("smount"), project_path + "/Pages/Homepage.saph")
+
+    
+}
 
 class class_subwindow {
     custom_var = 0;

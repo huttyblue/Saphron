@@ -1,6 +1,10 @@
 const electron = require('electron')
 const { app, BrowserWindow } = require('electron')
 const globalShortcut = electron.globalShortcut
+const ipcMain = require('electron').ipcMain;
+
+
+
 
 function createWindow () {
   var win = new BrowserWindow({
@@ -8,8 +12,14 @@ function createWindow () {
     height: 600,
     //titleBarStyle: 'hidden',
      webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
+          nodeIntegration: true,
+          contextIsolation: false,
+          nativeWindowOpen: true,
+          enableRemoteModule: true,
+          sandbox:false,
+          nodeIntegrationInSubFrames:true, //for subContent nodeIntegration Enable
+          webviewTag:true //for webView
+            
         }
   })
 
@@ -30,14 +40,25 @@ function createWindow () {
   catch (err) {
     console.log(err)
   }
+
+  
   
 
 }
 
+ ipcMain.handle('get_user_path', async (event, fileName) => {
+   //const fs = require('fs');
+    const path = electron.app.getPath('userData');
+    //const buf = await fs.promises.readFile(`${path}/${fileName}`);
+  return path;
+  })
 
 
 
 app.whenReady().then(() => {
+
+
+ 
   createWindow()
 })
 
