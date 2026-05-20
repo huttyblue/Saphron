@@ -38,7 +38,7 @@ class saphron_button {
 
 
 var smount = document.getElementById("smount");
-smount.innerHTML = "Saphron Loaded"
+//smount.innerHTML = "Saphron Loaded"
 
 
 function load_saph_project(_mount, _path){
@@ -60,6 +60,7 @@ function load_saph(_mount, _data){
 	var return_html = ""
 	var on_next = ""
 	var previous_tag = ""
+	var ac = smount;
 
 	for(var i = 0; i < data_ar.length; i++){
 		if(on_next != ""){
@@ -73,7 +74,7 @@ function load_saph(_mount, _data){
 					_saphron_button._path = "/Pages/"+data_ar[i]+"/"+ar_file_list[j]
 					_saphron_button._name = ar_file_list[j].toString().substring(0,ar_file_list[j].search(".saph"))
 					_saphron_button._parent = this
-					_saphron_button._host = smount
+					_saphron_button._host = ac
 					_saphron_button.refresh()
 					
 					
@@ -92,16 +93,18 @@ function load_saph(_mount, _data){
 			else{
 				var _new = document.createElement("span");
 				_new.textContent = data_ar[i]
-				smount.appendChild(_new)
+				ac.appendChild(_new)
 				
 			}
 
 			if(data_ar[i].indexOf(">header") != -1){
 				var _new = document.createElement("h1");
 				_new.className = 'saphron_header'
+				_new.innerHTML = data_ar[i+1]
 				smount.appendChild(_new)
+				i += 1;
 				
-				previous_tag = "</h1>"
+			
 			}
 
 
@@ -109,15 +112,16 @@ function load_saph(_mount, _data){
 				var _new = document.createElement("div");
 				_new.className = 'saphron_panel'
 				smount.appendChild(_new)
-				previous_tag = "</div>"
+				ac = _new 
 			}
 
 			if(data_ar[i].indexOf(">filelist") != -1){
 				var _new = document.createElement("div");
 				_new.className = 'saphron_panel'
 				smount.appendChild(_new)
+				ac = _new;
 				on_next = "filelist"
-				previous_tag = "</div>"
+				//previous_tag = "</div>"
 			}
 
 
@@ -127,7 +131,7 @@ function load_saph(_mount, _data){
 			}
 
 		}
-		console.log(return_html)
+		//console.log(return_html)
 
 	}
 

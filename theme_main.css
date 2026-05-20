@@ -13,7 +13,7 @@
 @property --background-color {
   syntax: "<color>";
   inherits: false;
-  initial-value: #5d656e;
+  initial-value: #121518;
 }
 
 @property --background-color-2 {
@@ -25,7 +25,7 @@
 @property --background-color-light {
   syntax: "<color>";
   inherits: false;
-  initial-value: rgb(27, 29, 32);
+  initial-value: #bdbdbd;
 }
 
 @property --text-light {
@@ -504,7 +504,11 @@ p {
 
 /* Saphron Page Elements */
 
+.saphron_mount{
+ 
 
+
+}
 
 .saphron_header {
   background-color:#557;
